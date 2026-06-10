@@ -1,5 +1,5 @@
 {
-  "name": "aila-tmp",
+  "name": "aila",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "dependencies": {
@@ -32,6 +32,8 @@
   "devDependencies": {
     "@testing-library/react-native": "^14.0.0",
     "@types/react": "~19.2.2",
+    "jest": "^29.7.0",
+    "jest-expo": "^56.0.4",
     "typescript": "~6.0.3"
   },
   "scripts": {
