@@ -5,10 +5,15 @@
     "scheme": "aila",
     "version": "1.0.0",
     "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "bundleIdentifier": "com.yourname.aila",
-      "supportsTablet": false
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSLocalNetworkUsageDescription": "Aila uses the local network to connect to the Metro development server while debugging.",
+        "NSBonjourServices": ["_expo._tcp"]
+      }
     },
     "plugins": [
       "expo-router",

@@ -1,4 +1,3 @@
-import * as WebBrowser from 'expo-web-browser';
 import { AULA_OAUTH } from '../constants/aula';
 import { generateCodeVerifier, generateCodeChallenge } from './pkce';
 import {
@@ -13,7 +12,10 @@ interface TokenResponse {
   refresh_token: string;
 }
 
-export async function startMitIdLogin(): Promise<StoredTokens> {
+// Returns the OAuth URL and the code verifier needed to exchange the code later.
+// The caller is responsible for opening the URL (e.g. via OAuthWebView) and
+// capturing the callback URL with the `code` param.
+export async function buildAuthUrl(): Promise<{ url: string; codeVerifier: string }> {
   const codeVerifier = generateCodeVerifier();
   const codeChallenge = await generateCodeChallenge(codeVerifier);
 
@@ -27,21 +29,17 @@ export async function startMitIdLogin(): Promise<StoredTokens> {
     state: generateCodeVerifier(),
   });
 
-  const authUrl = `${AULA_OAUTH.authorizationUrl}?${params}`;
-  const result = await WebBrowser.openAuthSessionAsync(
-    authUrl,
-    AULA_OAUTH.redirectUri,
-  );
+  return {
+    url: `${AULA_OAUTH.authorizationUrl}?${params}`,
+    codeVerifier,
+  };
+}
 
-  if (result.type !== 'success') {
-    throw new Error('Login annulleret');
-  }
-
-  const url = new URL(result.url);
+export function extractCodeFromCallbackUrl(callbackUrl: string): string {
+  const url = new URL(callbackUrl);
   const code = url.searchParams.get('code');
   if (!code) throw new Error('Intet autoriseringskode i svar');
-
-  return exchangeCodeForTokens(code, codeVerifier);
+  return code;
 }
 
 export async function exchangeCodeForTokens(
